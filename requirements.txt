@@ -1,0 +1,25 @@
+# Telegram Bot
+pyTelegramBotAPI==4.14.0
+
+# Reddit API
+praw==7.7.1
+
+# Sentiment Analysis
+textblob==0.17.1
+
+# Scheduling
+APScheduler==3.10.4
+
+# Environment Variables
+python-dotenv==1.0.0
+
+# Data Storage
+peewee==3.17.0  # Lightweight ORM for SQLite
+
+# Testing
+pytest==7.4.3
+pytest-cov==4.1.0
+
+# Optional: Better NLP (uncomment when ready to upgrade)
+# transformers==4.36.0
+# torch==2.1.0
