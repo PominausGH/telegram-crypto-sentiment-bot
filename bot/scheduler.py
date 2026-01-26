@@ -1,11 +1,12 @@
 import logging
+
 from apscheduler.schedulers.background import BackgroundScheduler
 from telebot import TeleBot
 
 from config import Config
+from data.models import SentimentHistory, User, Watchlist
 from data.reddit import fetch_reddit_posts
-from data.sentiment import analyze_sentiment, format_sentiment_report
-from data.models import Watchlist, User, SentimentHistory
+from data.sentiment import analyze_sentiment
 
 logger = logging.getLogger(__name__)
 

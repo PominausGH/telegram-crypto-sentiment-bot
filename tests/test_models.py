@@ -1,15 +1,12 @@
 """Tests for database models."""
 
-import os
 import pytest
-from peewee import SqliteDatabase
 
 from data.models import (
-    db,
+    SentimentHistory,
     User,
     Watchlist,
-    SentimentHistory,
-    init_db,
+    db,
     get_or_create_user,
 )
 
@@ -38,8 +35,10 @@ class TestUser:
         assert user.created_at is not None
 
     def test_telegram_id_unique(self, test_db):
+        from peewee import IntegrityError
+
         User.create(telegram_id=12345, username="user1")
-        with pytest.raises(Exception):  # IntegrityError
+        with pytest.raises(IntegrityError):
             User.create(telegram_id=12345, username="user2")
 
     def test_username_nullable(self, test_db):
@@ -67,10 +66,12 @@ class TestWatchlist:
         assert len(list(items)) == 3
 
     def test_unique_user_coin_pair(self, test_db):
+        from peewee import IntegrityError
+
         user = User.create(telegram_id=12345)
         Watchlist.create(user=user, coin="bitcoin")
 
-        with pytest.raises(Exception):  # IntegrityError
+        with pytest.raises(IntegrityError):
             Watchlist.create(user=user, coin="bitcoin")
 
     def test_different_users_same_coin(self, test_db):
@@ -150,7 +151,7 @@ class TestGetOrCreateUser:
     def test_returns_existing_user(self, test_db):
         User.create(telegram_id=12345, username="existing")
 
-        user = get_or_create_user(12345, "existing")
+        get_or_create_user(12345, "existing")
 
         # Should return existing, not create new
         all_users = User.select().where(User.telegram_id == 12345)

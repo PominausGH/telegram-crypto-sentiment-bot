@@ -1,14 +1,15 @@
-import os
 import logging
+import os
 from datetime import datetime
+
 from peewee import (
-    SqliteDatabase,
-    Model,
-    IntegerField,
     CharField,
-    FloatField,
     DateTimeField,
+    FloatField,
     ForeignKeyField,
+    IntegerField,
+    Model,
+    SqliteDatabase,
 )
 
 from config import Config
@@ -82,7 +83,7 @@ def init_db() -> None:
     logger.info(f"Database initialized at {db_path}")
 
 
-def get_or_create_user(telegram_id: int, username: str = None) -> User:
+def get_or_create_user(telegram_id: int, username: str | None = None) -> User:
     """Get existing user or create new one."""
     user, created = User.get_or_create(
         telegram_id=telegram_id,

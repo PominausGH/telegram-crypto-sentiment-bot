@@ -1,7 +1,6 @@
 """Tests for Telegram bot handlers."""
 
-from unittest.mock import MagicMock, patch, call
-import pytest
+from unittest.mock import MagicMock, patch
 
 
 class TestHelpHandler:
@@ -11,14 +10,6 @@ class TestHelpHandler:
         from bot.handlers import setup_handlers
 
         setup_handlers(mock_bot)
-
-        # Find the help handler
-        help_handler = None
-        for handler in mock_bot.message_handlers:
-            if "commands" in handler.get("filters", {}):
-                if "help" in handler["filters"]["commands"]:
-                    help_handler = handler["function"]
-                    break
 
         # The handler is registered via decorator, so we test the registration
         assert mock_bot.message_handler.called

@@ -1,5 +1,5 @@
 import logging
-from typing import Optional
+
 import praw
 from praw.models import Submission
 
@@ -7,7 +7,7 @@ from config import Config
 
 logger = logging.getLogger(__name__)
 
-_reddit_client: Optional[praw.Reddit] = None
+_reddit_client: praw.Reddit | None = None
 
 
 def get_reddit_client() -> praw.Reddit:
@@ -35,7 +35,7 @@ def extract_post_text(submission: Submission) -> str:
 
 def fetch_reddit_posts(
     coin: str,
-    subreddits: Optional[list[str]] = None,
+    subreddits: list[str] | None = None,
     limit: int = 50,
     time_filter: str = "day",
 ) -> list[dict]:

@@ -1,0 +1,58 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info
+.eggs
+*.egg
+
+# Virtual environments
+venv/
+env/
+.venv/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+
+# Local environment files (use docker-compose env_file instead)
+.env
+.env.local
+.env.*.local
+
+# Database (should be in a volume)
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+logs/
+
+# Documentation (not needed in container)
+docs/
+*.md
+!README.md
+
+# Claude
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db

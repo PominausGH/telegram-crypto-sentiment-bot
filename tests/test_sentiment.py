@@ -1,14 +1,13 @@
 """Tests for sentiment analysis module."""
 
-import pytest
 from data.sentiment import (
-    preprocess_text,
-    analyze_text,
     analyze_sentiment,
+    analyze_text,
     apply_crypto_modifiers,
+    format_sentiment_report,
     get_sentiment_emoji,
     get_sentiment_label,
-    format_sentiment_report,
+    preprocess_text,
 )
 
 

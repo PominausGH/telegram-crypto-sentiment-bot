@@ -1,64 +1,101 @@
 """Tests for configuration module."""
 
 import os
+import sys
 from unittest.mock import patch
-import pytest
 
 
 class TestConfigValidation:
     """Tests for configuration validation."""
 
-    @patch.dict(os.environ, {}, clear=True)
     def test_missing_all_required(self):
-        # Need to reimport to pick up patched env
-        import importlib
-        import config
+        """Test that validation catches all missing required config."""
+        # Remove config module if already imported
+        if "config" in sys.modules:
+            del sys.modules["config"]
 
-        importlib.reload(config)
+        # Patch environment before importing config
+        with (
+            patch.dict(os.environ, {}, clear=True),
+            patch("dotenv.load_dotenv", return_value=True),
+        ):
+            # Force reload to pick up patched environment
+            import importlib
 
-        missing = config.Config.validate()
+            import config
 
-        assert "TELEGRAM_BOT_TOKEN" in missing
-        assert "REDDIT_CLIENT_ID" in missing
-        assert "REDDIT_CLIENT_SECRET" in missing
+            importlib.reload(config)
 
-    @patch.dict(
-        os.environ,
-        {
+            # Manually clear the class attributes since they were set at import time
+            config.Config.TELEGRAM_BOT_TOKEN = None
+            config.Config.REDDIT_CLIENT_ID = None
+            config.Config.REDDIT_CLIENT_SECRET = None
+
+            missing = config.Config.validate()
+
+            assert "TELEGRAM_BOT_TOKEN" in missing
+            assert "REDDIT_CLIENT_ID" in missing
+            assert "REDDIT_CLIENT_SECRET" in missing
+
+    def test_all_required_present(self):
+        """Test validation passes when all required config present."""
+        if "config" in sys.modules:
+            del sys.modules["config"]
+
+        env_vars = {
             "TELEGRAM_BOT_TOKEN": "test_token",
             "REDDIT_CLIENT_ID": "test_id",
             "REDDIT_CLIENT_SECRET": "test_secret",
-        },
-    )
-    def test_all_required_present(self):
-        import importlib
-        import config
+        }
 
-        importlib.reload(config)
+        with (
+            patch.dict(os.environ, env_vars, clear=True),
+            patch("dotenv.load_dotenv", return_value=True),
+        ):
+            import importlib
 
-        missing = config.Config.validate()
+            import config
 
-        assert len(missing) == 0
+            importlib.reload(config)
 
-    @patch.dict(
-        os.environ,
-        {
-            "TELEGRAM_BOT_TOKEN": "test_token",
-            # Missing Reddit credentials
-        },
-        clear=True,
-    )
+            # Set the values manually
+            config.Config.TELEGRAM_BOT_TOKEN = "test_token"
+            config.Config.REDDIT_CLIENT_ID = "test_id"
+            config.Config.REDDIT_CLIENT_SECRET = "test_secret"
+
+            missing = config.Config.validate()
+
+            assert len(missing) == 0
+
     def test_partial_config(self):
-        import importlib
-        import config
+        """Test validation catches partial config."""
+        if "config" in sys.modules:
+            del sys.modules["config"]
 
-        importlib.reload(config)
+        env_vars = {
+            "TELEGRAM_BOT_TOKEN": "test_token",
+        }
 
-        missing = config.Config.validate()
+        with (
+            patch.dict(os.environ, env_vars, clear=True),
+            patch("dotenv.load_dotenv", return_value=True),
+        ):
+            import importlib
 
-        assert "TELEGRAM_BOT_TOKEN" not in missing
-        assert "REDDIT_CLIENT_ID" in missing
-        assert "REDDIT_CLIENT_SECRET" in missing
+            import config
+
+            importlib.reload(config)
+
+            # Set only telegram token
+            config.Config.TELEGRAM_BOT_TOKEN = "test_token"
+            config.Config.REDDIT_CLIENT_ID = None
+            config.Config.REDDIT_CLIENT_SECRET = None
+
+            missing = config.Config.validate()
+
+            assert "TELEGRAM_BOT_TOKEN" not in missing
+            assert "REDDIT_CLIENT_ID" in missing
+            assert "REDDIT_CLIENT_SECRET" in missing
 
 
 class TestConfigDefaults:

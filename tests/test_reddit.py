@@ -1,13 +1,11 @@
 """Tests for Reddit data fetching module."""
 
 from unittest.mock import MagicMock, patch
-import pytest
 
 from data.reddit import (
     extract_post_text,
     fetch_reddit_posts,
     fetch_subreddit_hot,
-    get_reddit_client,
 )
 
 
@@ -88,7 +86,7 @@ class TestFetchRedditPosts:
         assert result[0]["score"] == 100
         assert result[0]["num_comments"] == 50
         assert "Test post" in result[0]["text"]
-        assert "cryptocurrency" == result[0]["subreddit"]
+        assert result[0]["subreddit"] == "cryptocurrency"
 
     @patch("data.reddit.get_reddit_client")
     def test_searches_multiple_subreddits(self, mock_get_client):
